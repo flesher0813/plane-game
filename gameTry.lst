@@ -1,0 +1,2196 @@
+Microsoft (R) Macro Assembler Version 14.16.27032.1	    11/03/19 14:40:51
+gameTry.asm						     Page 1 - 1
+
+
+				include Irvine16.inc
+			      C ; Irvine16.inc - Include file for programs using
+			      C ; the Irvine16.lib (Real-address mode library).
+			      C 
+			      C ; Last update: 7/29/05
+			      C 
+			      C .NOLIST
+			      C .LIST
+			      C 
+ = 0006				mode_06 = 6 ;640 * 200, 2color
+ = 000D				mode_0d = 0dh ;320 * 200, 16color
+ = 000E				mode_0e = 0eh ;640 * 200, 16color
+ = 000F				mode_0f = 0fh ;640 * 350, 2color
+ = 0010				mode_10 = 10h ;640 * 350, 16color
+ = 0011				mode_11 = 11h ;640 * 480, 2color
+ = 0012				mode_12 = 12h ;640 * 480, 2color
+ = 0013				mode_13 = 13h ;320 * 200, 2color
+ = 006A				mode_6a = 6ah ;800 * 600, 2color
+
+
+ 0000				.data
+ 0000 00				savepage byte ?
+ 0001 20 20 20 20 20 20			gamestring byte "                    ***************************************",13,10,13,10,
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 0D
+       0A 0D 0A 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 2A
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 57 45 4C
+       43 4F 4D 45 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 2A 0D 0A 0D 0A
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 2A 20 20 20
+       20 20 20 20 20 20
+       31 20 47 52 41 56
+       49 54 59 20 50 4C
+       41 4E 45 20 4D 6F
+       64 65 20 20 20 20
+       20 20 20 20 2A 0D
+       0A 0D 0A 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 2A
+       20 20 20 20 20 20
+       20 20 20 32 20 45
+       53 43 41 50 45 20
+       20 50 4C 41 4E 45
+       20 4D 6F 64 65 20
+       20 20 20 20 20 20
+       20 2A 0D 0A 0D 0A
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 45 4E 54 45
+       52 20 41 20 4E 55
+       4D 42 45 52 20 54
+       4F 20 43 48 4F 4F
+       53 45 20 59 4F 55
+       52 20 47 41 4D 45
+       20 4D 4F 44 45 0D
+       0A 0D 0A 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 24
+				"                    *               WELCOME               *",13,10,13,10,
+				"                    *         1 GRAVITY PLANE Mode        *",13,10,13,10,
+				"                    *         2 ESCAPE  PLANE Mode        *",13,10,13,10,
+				"                    ENTER A NUMBER TO CHOOSE YOUR GAME MODE",13,10,13,10,
+				"                    ***************************************$";35个*
+
+ 0178 20 20 20 20 20 20			difficultystring byte "                    ***************************************",13,10,13,10,
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 0D
+       0A 0D 0A 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 2A
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 31 20
+       45 41 53 59 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 2A 0D 0A 0D 0A
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 2A 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 32 20 4E 4F 52
+       4D 41 4C 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 2A 0D
+       0A 0D 0A 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 2A
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 33 20
+       48 41 52 44 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 2A 0D 0A 0D 0A
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 24
+				"                    *                1 EASY               *",13,10,13,10,
+				"                    *                2 NORMAL             *",13,10,13,10,
+				"                    *                3 HARD               *",13,10,13,10,
+				"                    ***************************************$"
+
+ 02B0 20 20 20 20 20 20		endstring byte "                    ***************************************",13,10,13,10,
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 0D
+       0A 0D 0A 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 47 41 4D
+       45 20 4F 56 45 52
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 0D 0A 0D 0A
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 59 6F 75
+       72 20 53 63 6F 72
+       65 3A 24
+				               "                                    GAME OVER              ",13,10,13,10,
+							   "                                 Your Score:$"
+ 035B 0D 0A 0D 0A 20 20		stringend byte 13,10,13,10,"                    ***************************************$"
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 2A 2A 2A
+       2A 2A 2A 24
+
+ 039B 00				game_mode byte ?
+ 039C 00				game_difficulty byte ?
+
+ 039D 0000				normal_word_segment word ?
+ = A000					video_segment = 0a000h
+ = 03C8					output_port = 3c8h
+ = 03C9					input_port = 3c9h
+ = 0004					enemy_aimed = 4
+ = 0003					enemy_index = 3
+ = 0002					setcolorback_index = 2
+ = 0001					color_index = 1
+
+ 039F 0000				xval word ?
+ 03A1 0000				yval word ?
+ 03A3 0000				score word ?
+ 03A5 53 63 6F 72 65 3A			scorestring byte "Score:",0
+       00
+
+ 03AC 4C 69 66 65 3A 00			lifestring byte "Life:",0
+ 03B2 0000				life_num word ?
+
+ = 0005					enemy_easy = 5
+ = 0040					enemy_max = 64
+ 03B4 0000				enemy_num_max word ?
+ 03B6 0000				enemy_num_left_max word ?
+ 03B8  0040 [				enemies dword enemy_max dup('$$')
+        00002424
+       ]
+ 04B8  0040 [				enemies_left dword enemy_max dup('$$')
+        00002424
+       ]
+ 05B8  0040 [				enemy_flags dword enemy_max dup(0)	;莫名放大，其实byte够用，或可改
+        00000000
+       ]
+ 06B8  0040 [				enemy_flags_left dword enemy_max dup(0)
+        00000000
+       ]
+ 07B8  0040 [				enemy_bullets_up dword enemy_max dup('$$')
+        00002424
+       ]
+ 08B8  0040 [				enemy_bullets_left dword enemy_max dup('$$')
+        00002424
+       ]
+
+ 09B8 0000				enemy_time word 0
+
+ 09BA 45 6E 65 6D 79 3A			enemystring byte "Enemy:",0
+       00
+
+ 09C1 0000				enemy_total word ?
+ 09C3 0000				enemy_num word ?
+ 09C5 0000				enemy_num_left word ?
+ 09C7 0000				enemy_on_screen word ?
+ 09C9 0000				enemy_speed word ?
+ 09CB 0000				enemy_birth_time word ?
+
+ = 0014					mybulletmax = 20
+ 09CD  0014 [				mybullets dword mybulletmax dup('$$')
+        00002424
+       ]
+
+ 0000				.code
+					assume cs:@code,ds:@data
+					setmodel proto modeltype:byte
+					drawline proto myred:byte,mygreen:byte,myblue:byte,search_port:byte,x:word,y:word
+
+ 0000					main proc
+ 0000  B8 ---- R				mov ax,@data
+ 0003  8E D8					mov ds,ax
+ 0005  8B EC					mov bp,sp
+
+ 0007  E8 002A					call startpage
+
+						invoke setmodel,mode_13
+ 000F  E8 00BA					call setbackground
+
+ 0012  C7 06 039F R 00A0			mov xval,160
+ 0018  C7 06 03A1 R 0064			mov yval,100
+						.if game_mode =='1'
+ 0025  E8 0831						call waitforstart
+						.else
+ 002A  E8 0E54						call waitforescape
+						.endif
+ 002D  E8 0056					call end_page
+						exit
+ 0034					main endp
+
+ 0034					startpage proc
+ 0034  E8 0000 E				call Clrscr
+
+ 0037  B4 02					mov ah,2
+ 0039  B6 05					mov dh,5
+ 003B  B2 00					mov dl,0
+ 003D  CD 10					int 10h
+
+ 003F  B4 09					mov ah,9
+ 0041  BA 0001 R				mov dx,offset gamestring
+ 0044  CD 21					int 21h
+
+ 0046						get_game_mode:
+ 0046  B4 10						mov ah,10h
+ 0048  CD 16						int 16h
+							.if al != '1' && al != '2' && al != '3'
+ 0056  EB EE							jmp get_game_mode
+							.endif
+
+ 0058  A2 039B R				mov game_mode,al
+ 005B  E8 0000 E				call Clrscr
+
+ 005E  B4 02					mov ah,2
+ 0060  B6 05					mov dh,5
+ 0062  B2 00					mov dl,0
+ 0064  CD 10					int 10h
+
+ 0066  B4 09					mov ah,9
+ 0068  BA 0178 R				mov dx,offset difficultystring
+ 006B  CD 21					int 21h
+
+ 006D						get_difficulty:
+ 006D  B4 10						mov ah,10h
+ 006F  CD 16						int 16h
+							.if al != '1' && al != '2' && al != '3'
+ 007D  EB EE							jmp get_difficulty
+							.endif
+ 007F  A2 039C R				mov game_difficulty,al
+ 0082  E8 0000 E				call Clrscr
+ 0085  C3					ret
+ 0086					startpage endp
+
+ 0086					end_page proc
+ 0086  E8 0000 E				call Clrscr
+
+ 0089  B4 00					mov ah,0
+ 008B  A0 0000 R				mov al,savepage
+ 008E  CD 10					int 10h
+
+ 0090  B4 02					mov ah,2
+ 0092  B6 05					mov dh,5
+ 0094  B2 00					mov dl,0
+ 0096  CD 10					int 10h
+
+ 0098  B4 09					mov ah,9
+ 009A  BA 02B0 R				mov dx,offset endstring
+ 009D  CD 21					int 21h
+
+ 009F  66| 0F B7 06 03A3 R			movzx eax,score
+ 00A5  E8 0000 E				call writeint
+
+ 00A8  B4 09					mov ah,9
+ 00AA  BA 035B R				mov dx,offset stringend
+ 00AD  CD 21					int 21h
+
+ 00AF  B4 10					mov ah,10h
+ 00B1  CD 16					int 16h
+						exit
+ 00B7					end_page endp
+
+ 00B7					setmodel proc modeltype:byte
+
+ 00BA  B4 0F					mov ah,0fh
+ 00BC  CD 10					int 10h
+ 00BE  A2 0000 R				mov savepage,al
+
+ 00C1  B4 00					mov ah,0
+ 00C3  8A 46 04					mov al,modeltype
+ 00C6  CD 10					int 10h
+
+						;mov normal_word_segment,es
+
+						ret
+ 00CC					setmodel endp
+
+ 00CC					setbackground proc
+
+ 00CC  BA 03C8					mov dx,output_port
+ 00CF  B0 00					mov al,0
+ 00D1  EE					out dx,al
+
+ 00D2  BA 03C9					mov dx,input_port
+ 00D5  B0 00					mov al,0
+ 00D7  EE					out dx,al
+ 00D8  B0 00					mov al,0
+ 00DA  EE					out dx,al
+ 00DB  B0 23					mov al,35
+ 00DD  EE					out dx,al
+
+ 00DE  C3					ret
+ 00DF					setbackground endp
+
+ 00DF					drawset proc myred:byte,mygreen:byte,myblue:byte,search_port:byte
+ 00E2  52					push dx
+ 00E3  50					push ax
+
+
+ 00E4  BA 03C8					mov dx,output_port
+ 00E7  8A 46 0A					mov al,search_port
+ 00EA  EE					out dx,al
+
+ 00EB  BA 03C9					mov dx,input_port
+ 00EE  8A 46 04					mov al,myred
+ 00F1  EE					out dx,al
+ 00F2  8A 46 06					mov al,mygreen
+ 00F5  EE					out dx,al
+ 00F6  8A 46 08					mov al,myblue
+ 00F9  EE					out dx,al
+						
+ 00FA  58					pop ax
+ 00FB  5A					pop dx
+						ret
+ 0100					drawset endp
+
+ 0100					drawplane proc search_port:byte,x:word,y:word
+ 0103  57					push di
+ 0104  53					push bx
+ 0105  50					push ax
+ 0106  51					push cx
+
+ 0107  8A 5E 04					mov bl,search_port
+
+ 010A  B8 0140					mov ax,320
+ 010D  F7 66 08					mul y
+ 0110  03 46 06					add ax,x
+
+ 0113  B9 0010					mov cx,16
+ 0116  8B F8					mov di,ax
+ 0118  83 EF 08					sub di,8
+ 011B					DP0:
+ 011B  26: 88 1D				mov byte ptr es:[di],bl
+ 011E  83 C7 01					add di,1
+ 0121  E2 F8					loop DP0
+
+ 0123  B9 000A					mov cx,10
+ 0126  8B F8					mov di,ax
+ 0128					DP00:
+ 0128  26: 88 1D				mov byte ptr es:[di],bl
+ 012B  81 EF 0140				sub di,320
+ 012F  E2 F7					loop DP00
+
+ 0131  B9 0005					mov cx,5
+ 0134  8B F8					mov di,ax
+ 0136					DP000:
+ 0136  26: 88 1D				mov byte ptr es:[di],bl
+ 0139  81 C7 0140				add di,320
+ 013D  E2 F7					loop DP000
+
+ 013F  B9 0008					mov cx,8
+ 0142  83 EF 04					sub di,4
+ 0145					DP0000:
+ 0145  26: 88 1D				mov byte ptr es:[di],bl
+ 0148  83 C7 01					add di,1
+ 014B  E2 F8					loop DP0000
+
+ 014D  59					pop cx
+ 014E  58					pop ax
+ 014F  5B					pop bx
+ 0150  5F					pop di
+						ret
+ 0155					drawplane endp
+
+ 0155					drawbullet proc search_port:byte,x:word,y:word
+ 0158  57					push di
+ 0159  50					push ax
+ 015A  51					push cx
+
+ 015B  B8 0140					mov ax,320
+ 015E  F7 66 08					mul y
+ 0161  03 46 06					add ax,x
+						
+ 0164  B9 000A					mov cx,10
+ 0167  8B F8					mov di,ax
+ 0169  8A 46 04					mov al,search_port
+ 016C					DP1:
+ 016C  26: 88 05				mov byte ptr es:[di],al
+ 016F  81 C7 0140				add di,320
+ 0173  E2 F7					loop DP1
+
+ 0175  59					pop cx
+ 0176  58					pop ax
+ 0177  5F					pop di
+						ret
+ 017C					drawbullet endp
+
+ 017C					drawenemy proc search_port:byte,x:word,y:word
+ 017F  57					push di
+ 0180  50					push ax
+ 0181  51					push cx
+
+ 0182  B8 0140					mov ax,320
+ 0185  F7 66 08					mul y
+ 0188  03 46 06					add ax,x
+						
+ 018B  B9 000A					mov cx,10
+ 018E  8B F8					mov di,ax
+ 0190  8A 46 04					mov al,search_port
+ 0193					DP2:
+ 0193  51					push cx
+ 0194  57					push di
+
+ 0195  B9 000A					mov cx,10
+ 0198						DP22:
+ 0198  26: 88 05					mov byte ptr es:[di],al
+ 019B  47						inc di
+ 019C  E2 FA						loop DP22
+
+ 019E  5F					pop di
+ 019F  81 C7 0140				add di,320
+ 01A3  59					pop cx
+ 01A4  E2 ED					loop DP2
+
+ 01A6  59					pop cx
+ 01A7  58					pop ax
+ 01A8  5F					pop di
+						ret
+ 01AD					drawenemy endp
+
+ 01AD					drawenemies proc search_port:byte,enemys:ptr dword,num:word
+ 01B0  56					push si
+ 01B1  51					push cx
+ 01B2  66| 50					push eax
+
+ 01B4  8B 76 06					mov si,enemys
+ 01B7  8B 4E 08					mov cx,num
+ 01BA					E0:
+ 01BA  81 3C 2424				cmp word ptr [si],'$$'
+ 01BE  74 02					je new_a_enemy
+ 01C0  EB 25					jmp next_enemy
+
+ 01C2					new_a_enemy:
+ 01C2  51					push cx
+ 01C3  66| B8 00000136				mov eax,310;x
+ 01C9  E8 0000 E				call randomrange
+ 01CC  89 04					mov word ptr [si],ax
+
+ 01CE  66| B8 000000A0				mov eax,160;y
+ 01D4  E8 0000 E				call randomrange
+ 01D7  89 44 02					mov word ptr [si + 2],ax
+						
+						invoke drawenemy,search_port,word ptr [si],word ptr [si + 2]
+
+ 01E6  59					pop cx
+
+ 01E7					next_enemy:
+ 01E7  83 C6 04					add si,4
+ 01EA  E2 CE					loop E0
+
+ 01EC  66| 58					pop eax
+ 01EE  59					pop cx
+ 01EF  5E					pop si
+						ret
+ 01F4					drawenemies endp
+
+ 01F4					shoot proc
+ 01F4  56					push si
+ 01F5  51					push cx
+ 01F6  53					push bx
+
+
+ 01F7  BE 09CD R				mov si,offset mybullets
+ 01FA  B9 0014					mov cx,mybulletmax
+ 01FD						s0:
+ 01FD  81 3C 2424					cmp word ptr [si],'$$'
+ 0201  74 02						jz gotposition
+ 0203  EB 13						jmp nextposition
+
+ 0205							gotposition:
+ 0205  8B 1E 039F R						mov bx,xval
+ 0209  89 1C							mov word ptr [si],bx
+ 020B  8B 1E 03A1 R						mov bx,yval
+ 020F  89 5C 02							mov word ptr [si + 2],bx
+ 0212  83 6C 02 14						sub word ptr [si + 2],20
+ 0216  EB 05							jmp squit
+
+ 0218							nextposition:
+ 0218  83 C6 04							add si,type mybullets
+ 021B  E2 E0							loop s0
+ 021D					squit:
+						invoke drawbullet,color_index,word ptr [si],word ptr [si + 2]
+
+ 0227  5B					pop bx
+ 0228  59					pop cx
+ 0229  5E					pop si
+ 022A  C3					ret
+ 022B					shoot endp
+
+ 022B					move_bullet proc
+ 022B  56					push si
+ 022C  51					push cx
+
+ 022D  BE 09CD R				mov si,offset mybullets
+ 0230  B9 0014					mov cx,mybulletmax
+ 0233					L1:
+ 0233  51					push cx
+ 0234  81 3C 2424				cmp word ptr [si],'$$'
+ 0238  74 33					jz again
+						
+ 023A						L2:
+							invoke drawbullet,setcolorback_index,word ptr [si],word ptr [si + 2]
+ 0244  83 6C 02 05					sub word ptr [si + 2],5
+							invoke drawbullet,color_index,word ptr [si],word ptr [si + 2]
+
+ 0252  83 7C 02 0A					cmp word ptr [si + 2],10
+ 0256  72 02						jb changebullet
+ 0258  EB 13						jmp again
+
+ 025A						changebullet:
+							invoke drawbullet,setcolorback_index,word ptr [si],word ptr [si + 2]
+ 0264  C7 04 2424					mov word ptr [si],'$$'
+ 0268  C7 44 02 2424					mov word ptr [si + 2],'$$'
+
+ 026D						again:
+ 026D  83 C6 04						add si,4
+ 0270  59						pop cx
+ 0271  E2 C0						loop L1
+
+ 0273  59					pop cx
+ 0274  5E					pop si
+ 0275  C3					ret
+ 0276					move_bullet endp
+
+ 0276					move_enemy proc
+ 0276  56					push si
+ 0277  51					push cx
+						
+ 0278  BE 03B8 R				mov si,offset enemies
+ 027B  B9 0040					mov cx,enemy_max ;移动enemy的个数，如果扩大敌数怎么写?
+								;直接和最大数值对比
+ 027E						E1:
+ 027E  51					push cx
+ 027F  81 3C 2424				cmp word ptr [si],'$$'
+ 0283  74 38					jz next
+						
+ 0285						E2:
+							invoke drawenemy,setcolorback_index,word ptr [si],word ptr [si + 2]
+ 028F  83 44 02 01					add word ptr [si + 2],1
+							invoke drawenemy,enemy_index,word ptr [si],word ptr [si + 2]
+
+ 029D  81 7C 02 00BE					cmp word ptr [si + 2],190
+ 02A2  77 02						ja changeenemy
+ 02A4  EB 17						jmp next
+
+ 02A6						changeenemy:
+ 02A6  FF 0E 09C7 R					dec enemy_on_screen ;超过屏幕后显示的敌机减少，但不代表被消灭
+							invoke drawenemy,setcolorback_index,word ptr [si],word ptr [si + 2]
+ 02B4  C7 04 2424					mov word ptr [si],'$$'
+ 02B8  C7 44 02 2424					mov word ptr [si + 2],'$$'
+
+ 02BD						next:
+ 02BD  83 C6 04						add si,4
+ 02C0  59						pop cx
+ 02C1  E2 BB						loop E1
+
+ 02C3  59					pop cx
+ 02C4  5E					pop si
+ 02C5  C3					ret
+ 02C6					move_enemy endp
+
+ 02C6					checkthekey proc
+ 02C6  52					push dx
+
+ 02C7  8A D0					mov dl,al
+
+						.if dl == 77h || dl == 57h;w
+ 02D3  EB 37						jmp gotw
+
+						.elseif dl == 73h || dl == 53h;s
+ 02E1  EB 3D						jmp gots
+
+						.elseif dl == 61h || dl == 41h;a
+ 02EF  EB 43						jmp gota
+
+						.elseif dl == 64h || dl == 44h;d
+ 02FD  EB 49						jmp gotd
+
+						.elseif dl == 20h
+ 0306  EB 61						jmp shootnow
+
+						.else
+ 030A  EB 60						jmp quit
+						.endif
+
+ 030C						gotw:
+							invoke drawplane,setcolorback_index,xval,yval
+ 0319  83 2E 03A1 R 05					sub yval,5
+ 031E  EB 3A						jmp gotnewposition
+						
+ 0320						gots:
+							invoke drawplane,setcolorback_index,xval,yval
+ 032D  83 06 03A1 R 05					add yval,5
+ 0332  EB 26						jmp gotnewposition
+
+ 0334						gota:
+							invoke drawplane,setcolorback_index,xval,yval
+ 0341  83 2E 039F R 05					sub xval,5
+ 0346  EB 12						jmp gotnewposition
+
+ 0348						gotd:
+							invoke drawplane,setcolorback_index,xval,yval
+ 0355  83 06 039F R 05					add xval,5
+							
+ 035A						gotnewposition:
+							invoke drawplane,color_index,xval,yval
+ 0367  EB 03						jmp quit
+
+ 0369						shootnow:
+ 0369  E8 FE88						call shoot
+
+ 036C						quit:
+ 036C  5A						pop dx
+ 036D  C3						ret	
+ 036E					checkthekey endp
+
+ 036E					checkaim proc enemys:ptr dword,num:word
+ 0371  56					push si
+ 0372  51					push cx
+ 0373  57					push di
+
+ 0374  BE 09CD R				mov si,offset mybullets
+ 0377  B9 0014					mov cx,mybulletmax
+ 037A						CA0:
+ 037A  81 3C 2424					cmp word ptr [si],'$$'
+ 037E  51						push cx
+ 037F  74 5F						jz nextbullet
+ 0381  B9 0040						mov cx,enemy_max;同样的改变敌人数量后怎么写
+ 0384  8B 7E 04						mov di,enemys
+ 0387							CA1:
+								
+ 0387  81 3D 2424						cmp word ptr [di],'$$'
+ 038B  74 4E							jz nextenemy
+
+								;检查敌人和子弹的横坐标距离
+ 038D  8B 04							mov ax,word ptr [si]
+ 038F  2B 05							sub ax,word ptr [di]
+ 0391  83 F8 0A							cmp ax,10
+ 0394  73 45							jnb nextenemy
+
+								;检查敌人和子弹的纵坐标距离
+ 0396  8B 44 02							mov ax,word ptr [si + 2]
+ 0399  2B 45 02							sub ax,word ptr [di + 2]
+ 039C  83 F8 0A							cmp ax,10
+ 039F  73 3A							jnb nextenemy
+
+
+								;确认击中，删除子弹和敌人
+
+								invoke drawenemy,setcolorback_index,word ptr [di],word ptr [di + 2]
+ 03AB  C7 05 2424						mov word ptr [di],'$$'
+ 03AF  C7 45 02 2424						mov word ptr [di + 2],'$$'
+
+								invoke drawbullet,setcolorback_index,word ptr [si],word ptr [si + 2]
+ 03BE  C7 04 2424						mov word ptr [si],'$$'
+ 03C2  C7 44 02 2424						mov word ptr [si + 2],'$$'
+
+ 03C7  FF 06 03A3 R						inc score ;增分
+ 03CB  FF 4E 06							dec num ;敌人数量减少
+ 03CE  FF 0E 09C7 R						dec enemy_on_screen ;屏幕上的敌人减少
+ 03D2  FF 0E 09C1 R						dec enemy_total ;剩余的敌人总数减少
+ 03D6  E8 009B							call renew_data
+ 03D9  EB 05							jmp nextbullet
+ 03DB							nextenemy:
+ 03DB  83 C7 04							add di,4
+ 03DE  E2 A7							loop CA1
+
+ 03E0							nextbullet:
+ 03E0  59							pop cx
+ 03E1  83 C6 04							add si,type mybullets
+ 03E4  E2 94							loop CA0
+
+ 03E6  5F					pop di
+ 03E7  59					pop cx
+ 03E8  5E					pop si
+						ret
+ 03ED					checkaim endp
+
+ 03ED					check_gravity_living proc enemys:ptr dword
+ 03F0  56					push si
+ 03F1  51					push cx
+ 03F2  50					push ax
+
+ 03F3  8B 76 04					mov si,enemys
+ 03F6  B9 0040					mov cx,enemy_max;改变敌人数
+ 03F9						CGL0:
+							;检测enemy是否存在
+ 03F9  81 3C 2424					cmp word ptr [si],'$$'
+ 03FD  74 53						jz next_check
+							;检测enemy的横坐标和飞机的横坐标的关系
+
+ 03FF  A1 039F R					mov ax,xval
+ 0402  2B 04						sub ax,word ptr [si]
+							.if ax < 10 && ax > 0
+ 040E  A1 03A1 R							mov ax,yval
+ 0411  2B 44 02								sub ax,word ptr [si + 2]
+							;检测enemy的纵坐标和飞机的纵坐标的关系
+									.if ax < 10 && ax > 0
+										;invoke drawplane,enemy_aimed,xval,yval
+ 041E  FF 0E 03B2 R								dec life_num
+										;飞机死后回到起始位置
+										invoke drawplane,setcolorback_index,xval,yval
+ 042F  C7 06 039F R 00A0							mov xval,160
+ 0435  C7 06 03A1 R 00A0							mov yval,160
+										invoke drawplane,color_index,xval,yval
+										;检测生命值是否有剩，有的话返回，没有进入终止界面
+ 0448  83 3E 03B2 R 00								cmp life_num,0
+ 044D  75 08									jnz CGL_back
+ 044F  E8 FC34									call end_page
+									.endif
+							.endif
+						
+ 0452							next_check:
+ 0452  83 C6 04							add si,4
+ 0455  E2 A2							loop CGL0
+ 0457					CGL_back:
+ 0457  58					pop ax
+ 0458  59					pop cx
+ 0459  5E					pop si
+ 045A  E8 0017					call renew_data
+						ret
+ 0461					check_gravity_living endp
+
+ 0461					renew_temple proc string: ptr byte,num:word
+					 
+ 0464  8B 56 04					mov dx,string
+ 0467  E8 0000 E				call writestring
+ 046A  8B 46 06					mov ax,num
+ 046D  E8 0000 E				call writeint
+
+						ret
+ 0474					renew_temple endp
+
+ 0474					renew_data proc
+ 0474  06					push es
+ 0475  50					push ax
+ 0476  52					push dx
+ 0477  8E 06 039D R				mov es,normal_word_segment
+						;更新score
+ 047B  B4 02					mov ah,2
+ 047D  B6 00					mov dh,0
+ 047F  B2 00					mov dl,0
+ 0481  CD 10					int 10h
+						invoke renew_temple,addr scorestring,score
+
+						;更新enemy
+ 048D  B4 02					mov ah,2
+ 048F  B6 00					mov dh,0
+ 0491  B2 1E					mov dl,30
+ 0493  CD 10					int 10h
+						invoke renew_temple,addr enemystring,enemy_total
+
+						;更新生命值
+ 049F  B4 02					mov ah,2
+ 04A1  B6 00					mov dh,0
+ 04A3  B2 0F					mov dl,15
+ 04A5  CD 10					int 10h
+						invoke renew_temple,addr lifestring,life_num
+
+ 04B1  5A					pop dx
+ 04B2  58					pop ax
+ 04B3  07					pop es
+ 04B4  C3					ret
+ 04B5					renew_data endp
+
+ 04B5					gravity_barrier_easy proc
+ 04B5  66| 50					push eax
+ 04B7  53					push bx
+ 04B8  52					push dx
+
+ 04B9  B4 03					mov ah,3
+ 04BB  B0 05					mov al,5
+ 04BD  B7 00					mov bh,0
+ 04BF  CD 16					int 16h
+ 04C1						L0:
+ 04C1  66| B8 00000096					mov eax,150
+ 04C7  E8 0000 E					call delay
+ 04CA  B4 11						mov ah,11h
+ 04CC  CD 16						int 16h
+ 04CE  74 19						jz nokeypressed
+ 04D0  B4 10						mov ah,10h
+ 04D2  CD 16						int 16h
+ 04D4  8A D0						mov dl,al
+								.if dl == 27 ;esc
+ 04DB  B4 00								mov ah,0
+ 04DD  A0 0000 R							mov al,savepage
+ 04E0  CD 10								int 10h
+									exit
+								.endif
+ 04E6  E8 FDDD							call checkthekey
+ 04E9							nokeypressed:
+ 04E9  E8 FD3F							call move_bullet
+								invoke checkaim,addr enemies,enemy_num
+								invoke check_gravity_living,addr enemies
+ 04FC  FF 06 09B8 R						inc enemy_time
+ 0500  A1 09C9 R						mov ax,enemy_speed
+ 0503  39 06 09B8 R						cmp enemy_time,ax
+ 0507  75 09							jnz enemy_not_ready
+ 0509							enemy_ready_move:
+ 0509  E8 FD6A							call move_enemy
+ 050C  C7 06 09B8 R 0000					mov enemy_time,0
+ 0512							enemy_not_ready:
+ 0512  83 3E 09C1 R 00						cmp enemy_total,0
+ 0517  74 4B							jz gravity_back
+ 0519  83 3E 09C3 R 00						cmp enemy_num,0
+ 051E  74 1D							jz gravity_enemies
+ 0520  83 3E 09C7 R 00						cmp enemy_on_screen,0
+ 0525  74 02							jz renew_enemy_screen
+ 0527  EB 98							jmp L0
+ 0529							renew_enemy_screen:
+ 0529  A1 09C3 R						mov ax,enemy_num
+ 052C  A3 09C7 R						mov enemy_on_screen,ax
+								invoke drawenemies,enemy_index,addr enemies,enemy_num
+ 053B  EB 84							jmp L0
+ 053D							gravity_enemies:
+ 053D  66| B8 00000006						mov eax,6
+ 0543  E8 0000 E						call randomrange
+								.if ax > enemy_total
+ 054C  A1 09C1 R							mov ax,enemy_total
+								.endif
+ 054F  A3 09C7 R						mov enemy_on_screen,ax
+ 0552  A3 09C3 R						mov enemy_num,ax
+								invoke drawenemies,enemy_index,addr enemies,enemy_num
+ 0561  E9 FF5D							jmp L0
+
+ 0564						gravity_back:
+ 0564  5A						pop dx
+ 0565  5B						pop bx
+ 0566  66| 58						pop eax
+ 0568  C3						ret
+ 0569					gravity_barrier_easy endp
+
+ 0569					move_enemy_normal proc
+ 0569  56					push si
+ 056A  57					push di
+ 056B  51					push cx
+
+ 056C  BE 03B8 R				mov si,offset enemies
+ 056F  BF 05B8 R				mov di,offset enemy_flags
+ 0572  B9 0040					mov cx,enemy_max
+ 0575						MEN0:
+ 0575  81 3C 2424					cmp word ptr [si],'$$'
+ 0579  74 41						jz next_enemy
+
+							invoke drawenemy,setcolorback_index,word ptr [si],word ptr [si + 2]
+							.if	word ptr [si + 2] > 190	;下降得太下面就往上
+ 058C  66| C7 05 00000001					mov dword ptr [di],1
+							.elseif word ptr [si + 2] < 10	;上升得太上面就往下
+ 059B  66| C7 05 00000000					mov dword ptr [di],0
+							.endif
+							.if dword ptr [di] == 0	;下降可行
+ 05A8  83 44 02 01						add word ptr [si + 2],1
+							.else	;应当上升
+ 05AE  83 6C 02 01						sub word ptr [si + 2],1
+							.endif
+							invoke drawenemy,enemy_index,word ptr [si],word ptr [si + 2]
+							;因为不会触底消失，所以不应该更改敌人的各项数值
+ 05BC						next_enemy:
+ 05BC  83 C6 04						add si,4
+ 05BF  83 C7 04						add di,4
+ 05C2  E2 B1						loop MEN0
+
+
+ 05C4					MEN_quit:
+ 05C4  59					pop cx
+ 05C5  5F					pop di
+ 05C6  5E					pop si
+ 05C7  C3					ret
+ 05C8					move_enemy_normal endp
+
+ 05C8					gravity_barrier_normal proc
+ 05C8  66| 50					push eax
+ 05CA  53					push bx
+ 05CB  52					push dx
+
+ 05CC  C7 06 09CB R 0064			mov enemy_birth_time,100	;产生新敌人的速度,5过快了
+
+ 05D2  B4 03					mov ah,3
+ 05D4  B0 05					mov al,5
+ 05D6  B7 00					mov bh,0
+ 05D8  CD 16					int 16h
+ 05DA						L0:
+ 05DA  66| B8 00000096					mov eax,150	;反应时间，和键盘灵敏度，下落速度相关
+ 05E0  E8 0000 E					call delay
+ 05E3  B4 11						mov ah,11h
+ 05E5  CD 16						int 16h
+ 05E7  74 19						jz nokeypressed ;键盘无按动时，enemy也需要下降
+ 05E9  B4 10						mov ah,10h
+ 05EB  CD 16						int 16h
+ 05ED  8A D0						mov dl,al
+								.if dl == 27 ;esc退出游戏
+ 05F4  B4 00								mov ah,0
+ 05F6  A0 0000 R							mov al,savepage
+ 05F9  CD 10								int 10h
+									exit
+								.endif
+ 05FF  E8 FCC4							call checkthekey ;检查是否为有效按键
+ 0602							nokeypressed:
+ 0602  E8 FC26							call move_bullet ;射出的子弹移动
+								invoke checkaim,addr enemies,enemy_num ;查看是否命中敌人
+								invoke check_gravity_living,addr enemies ;此函数或可不变,实质上是检测是否碰撞
+ 0615  FF 0E 09CB R						dec enemy_birth_time ;减少敌人出现的时间
+ 0619  FF 06 09B8 R						inc enemy_time ;用来区分我移动和敌人移动，数值越小，敌我移动速度的插件越小
+ 061D  A1 09C9 R						mov ax,enemy_speed
+ 0620  39 06 09B8 R						cmp enemy_time,ax
+ 0624  75 09							jnz enemy_not_ready
+ 0626							enemy_ready_move:	;当达到可以移动的条件时移动敌人，move_enemy必须改变
+ 0626  E8 FF40							call move_enemy_normal
+ 0629  C7 06 09B8 R 0000					mov enemy_time,0
+ 062F							enemy_not_ready:
+ 062F  83 3E 09C1 R 00						cmp enemy_total,0	;查看是否消灭所有敌人
+ 0634  74 4C							jz gravity_back
+ 0636  83 3E 09C3 R 00						cmp enemy_num,0	;查看是否消灭当前敌人，不需要查看是否消灭屏幕上的敌人，因为触底不消失
+ 063B  74 09							jz gravity_enemies
+ 063D  83 3E 09CB R 00						cmp enemy_birth_time,0
+ 0642  74 02							jz gravity_enemies
+ 0644  EB 94							jmp L0
+ 0646							gravity_enemies:	;调用此段是产生新的敌人,按时间产生
+ 0646  A1 09C1 R						mov ax,enemy_total
+ 0649  39 06 09C3 R						cmp enemy_num,ax
+ 064D  74 33							jz gravity_back	;如果敌人数目和总数一致则不再继续加人
+ 064F  66| B8 00000005						mov eax,5
+ 0655  E8 0000 E						call randomrange
+ 0658  66| 40							inc eax	;加一到五人
+ 065A  03 06 09C3 R						add ax,enemy_num
+								.if ax > enemy_total
+ 0664  A1 09C1 R							mov ax,enemy_total
+								.endif
+ 0667  A3 09C7 R						mov enemy_on_screen,ax
+ 066A  A3 09C3 R						mov enemy_num,ax
+ 066D  C7 06 09CB R 0064					mov enemy_birth_time,100
+								invoke drawenemies,enemy_index,addr enemies,enemy_num
+ 067F  E9 FF58							jmp L0
+
+ 0682						gravity_back:
+ 0682  5A						pop dx
+ 0683  5B						pop bx
+ 0684  66| 58						pop eax
+ 0686  C3						ret
+ 0687					gravity_barrier_normal endp
+
+ 0687					move_up_and_down proc
+						invoke drawenemy,setcolorback_index,word ptr [si],word ptr [si + 2]
+							.if	word ptr [si + 2] > 190	;下降得太下面就往上
+ 0698  66| C7 05 00000001					mov dword ptr [di],1
+							.elseif word ptr [si + 2] < 10	;上升得太上面就往下
+ 06A7  66| C7 05 00000000					mov dword ptr [di],0
+							.endif
+							.if dword ptr [di] == 0	;下降可行
+ 06B4  83 44 02 01						add word ptr [si + 2],1
+							.else	;应当上升
+ 06BA  83 6C 02 01						sub word ptr [si + 2],1
+							.endif
+						invoke drawenemy,enemy_index,word ptr [si],word ptr [si + 2]
+ 06C8  C3					ret
+ 06C9					move_up_and_down endp
+
+ 06C9					move_left_and_right proc
+						invoke drawenemy,setcolorback_index,word ptr [si],word ptr [si + 2]
+							.if	word ptr [si] > 310	;右得太右就往左
+ 06D9  66| C7 05 00000001					mov dword ptr [di],1
+							.elseif word ptr [si] < 10	;左升得太左就往右
+ 06E7  66| C7 05 00000000					mov dword ptr [di],0
+							.endif
+							.if dword ptr [di] == 0	;右行
+ 06F4  83 04 01							add word ptr [si],1
+							.else	;应当左
+ 06F9  83 2C 01							sub word ptr [si],1
+							.endif
+						invoke drawenemy,enemy_index,word ptr [si],word ptr [si + 2]
+ 0706  C3					ret
+ 0707					move_left_and_right endp
+
+ 0707					move_enemy_hard proc
+ 0707  56					push si
+ 0708  57					push di
+ 0709  51					push cx
+ 070A  66| 50					push eax
+
+ 070C  BE 03B8 R				mov si,offset enemies
+ 070F  BF 05B8 R				mov di,offset enemy_flags
+ 0712  B9 0040					mov cx,enemy_max
+ 0715						MEH0:
+ 0715  81 3C 2424					cmp word ptr [si],'$$'
+ 0719  74 03						jz next_enemy0
+ 071B  E8 FF69						call move_up_and_down
+ 071E						next_enemy0:
+ 071E  83 C6 04						add si,4
+ 0721  83 C7 04						add di,4
+ 0724  E2 EF						loop MEH0
+
+ 0726  BE 04B8 R				mov si,offset enemies_left
+ 0729  BF 06B8 R				mov di,offset enemy_flags_left
+ 072C  B9 0040					mov cx,enemy_max
+ 072F						MEH1:
+ 072F  81 3C 2424					cmp word ptr [si],'$$'
+ 0733  74 03						jz next_enemy1
+ 0735  E8 FF91						call move_left_and_right
+ 0738						next_enemy1:
+ 0738  83 C6 04						add si,4
+ 073B  83 C7 04						add di,4
+ 073E  E2 EF						loop MEH1
+
+ 0740					MEH_quit:
+ 0740  66| 58					pop eax
+ 0742  59					pop cx
+ 0743  5F					pop di
+ 0744  5E					pop si
+ 0745  C3					ret
+ 0746					move_enemy_hard endp
+
+ 0746					gravity_barrier_hard proc
+ 0746  66| 50					push eax
+ 0748  53					push bx
+ 0749  52					push dx
+
+ 074A  C7 06 09CB R 0050			mov enemy_birth_time,80	;产生新敌人的速度,5过快了
+
+ 0750  B4 03					mov ah,3
+ 0752  B0 05					mov al,5
+ 0754  B7 00					mov bh,0
+ 0756  CD 16					int 16h
+ 0758						L0:
+ 0758  66| B8 00000064					mov eax,100	;反应时间，和键盘灵敏度，下落速度相关
+ 075E  E8 0000 E					call delay
+ 0761  B4 11						mov ah,11h
+ 0763  CD 16						int 16h
+ 0765  74 19						jz nokeypressed ;键盘无按动时，enemy也需要下降
+ 0767  B4 10						mov ah,10h
+ 0769  CD 16						int 16h
+ 076B  8A D0						mov dl,al
+								.if dl == 27 ;esc退出游戏
+ 0772  B4 00								mov ah,0
+ 0774  A0 0000 R							mov al,savepage
+ 0777  CD 10								int 10h
+									exit
+								.endif
+ 077D  E8 FB46							call checkthekey ;检查是否为有效按键
+ 0780							nokeypressed:
+ 0780  E8 FAA8							call move_bullet ;射出的子弹移动
+								invoke checkaim,addr enemies,enemy_num_max ;查看是否命中敌人
+								invoke checkaim,addr enemies_left,enemy_num_left_max
+								invoke check_gravity_living,addr enemies ;此函数或可不变,实质上是检测是否碰撞
+								invoke check_gravity_living,addr enemies_left
+ 07A3  FF 0E 09CB R						dec enemy_birth_time ;减少敌人出现的时间
+ 07A7  FF 06 09B8 R						inc enemy_time ;用来区分我移动和敌人移动，数值越小，敌我移动速度的插件越小
+ 07AB  A1 09C9 R						mov ax,enemy_speed
+ 07AE  39 06 09B8 R						cmp enemy_time,ax
+ 07B2  75 09							jnz enemy_not_ready
+ 07B4							enemy_ready_move:	;当达到可以移动的条件时移动敌人，move_enemy必须改变
+ 07B4  E8 FF50							call move_enemy_hard
+ 07B7  C7 06 09B8 R 0000					mov enemy_time,0
+ 07BD							enemy_not_ready:
+ 07BD  83 3E 09C1 R 00						cmp enemy_total,0	;查看是否消灭所有敌人
+ 07C2  0F 84 008E						jz gravity_back
+ 07C6  83 3E 09C3 R 00						cmp enemy_num,0	;查看是否消灭当前敌人，不需要查看是否消灭屏幕上的敌人，因为触底不消失
+ 07CB  74 09							jz gravity_enemies
+ 07CD  83 3E 09CB R 00						cmp enemy_birth_time,0
+ 07D2  74 02							jz gravity_enemies
+ 07D4  EB 82							jmp L0
+ 07D6							gravity_enemies:	;调用此段是产生新的敌人,按时间产生
+ 07D6  66| B8 00000002						mov eax,2
+ 07DC  E8 0000 E						call randomrange
+								.if ax == 0
+ 07E3  A1 03B4 R							mov ax,enemy_num_max
+ 07E6  39 06 09C3 R							cmp enemy_num,ax
+ 07EA  74 68								jz gravity_back	;如果敌人数目和总数一致则不再继续加人
+ 07EC  66| B8 00000005							mov eax,5
+ 07F2  E8 0000 E							call randomrange
+ 07F5  66| 40								inc eax	;加一到五人
+ 07F7  03 06 09C3 R							add ax,enemy_num
+									.if ax > enemy_num_max
+ 0801  A1 03B4 R								mov ax,enemy_num_max
+									.endif
+ 0804  A3 09C3 R							mov enemy_num,ax
+ 0807  C7 06 09CB R 0064						mov enemy_birth_time,100
+									invoke drawenemies,enemy_index,addr enemies,enemy_num
+								.else
+ 081B  A1 03B6 R							mov ax,enemy_num_left_max
+ 081E  39 06 09C5 R							cmp enemy_num_left,ax
+ 0822  74 30								jz gravity_back	;如果敌人数目和总数一致则不再继续加人
+ 0824  66| B8 00000005							mov eax,5
+ 082A  E8 0000 E							call randomrange
+ 082D  66| 40								inc eax	;加一到五人
+ 082F  03 06 09C5 R							add ax,enemy_num_left
+									.if ax > enemy_num_left_max
+ 0839  A1 03B6 R								mov ax,enemy_num_left_max
+									.endif
+ 083C  A3 09C5 R							mov enemy_num_left,ax
+ 083F  C7 06 09CB R 0064						mov enemy_birth_time,100
+									invoke drawenemies,enemy_index,addr enemies_left,enemy_num_left
+								.endif
+ 0851  E9 FF04							jmp L0
+
+ 0854						gravity_back:
+ 0854  5A						pop dx
+ 0855  5B						pop bx
+ 0856  66| 58						pop eax
+ 0858  C3						ret
+ 0859					gravity_barrier_hard endp
+
+ 0859					waitforstart proc
+							invoke drawset,63,63,63,color_index
+							invoke drawset,0,0,35,setcolorback_index
+							invoke drawset,63,35,35,enemy_index
+							invoke drawset,63,0,0,enemy_aimed
+
+						.if game_difficulty == '1'
+ 088C  C7 06 09C9 R 0002				mov enemy_speed,2
+ 0892  C7 06 03A3 R 0000				mov score,0
+ 0898  C7 06 09C1 R 0020				mov enemy_total,32
+ 089E  C7 06 09C3 R 0005				mov enemy_num,enemy_easy
+ 08A4  C7 06 09C7 R 0005				mov enemy_on_screen,enemy_easy
+ 08AA  C7 06 03B2 R 0003				mov life_num,3
+ 08B0  E8 FBC1						call renew_data
+
+ 08B3  8C 06 039D R					mov normal_word_segment,es
+ 08B7  06						push es
+ 08B8  68 A000						push video_segment;super important
+ 08BB  07						pop es
+
+							invoke drawplane,color_index,xval,yval
+							invoke drawenemies,enemy_index,addr enemies,enemy_num
+ 08D5  B4 03						mov ah,3
+ 08D7  B0 05						mov al,5
+ 08D9  B7 00						mov bh,0
+ 08DB  CD 16						int 16h
+ 08DD  E8 FBD5						call gravity_barrier_easy
+ 08E0  E8 F7A3						call end_page
+						.elseif game_difficulty == '2'
+ 08ED  C7 06 09C9 R 0001				mov enemy_speed,1
+ 08F3  C7 06 03A3 R 0000				mov score,0
+ 08F9  C7 06 09C1 R 0040				mov enemy_total,64
+ 08FF  C7 06 09C3 R 0005				mov enemy_num,enemy_easy
+ 0905  C7 06 09C7 R 0005				mov enemy_on_screen,enemy_easy
+ 090B  C7 06 03B2 R 0003				mov life_num,3
+ 0911  E8 FB60						call renew_data
+
+ 0914  8C 06 039D R					mov normal_word_segment,es
+ 0918  06						push es
+ 0919  68 A000						push video_segment;super important
+ 091C  07						pop es
+
+							invoke drawplane,color_index,xval,yval
+							invoke drawenemies,enemy_index,addr enemies,enemy_num
+ 0936  B4 03						mov ah,3
+ 0938  B0 05						mov al,5
+ 093A  B7 00						mov bh,0
+ 093C  CD 16						int 16h
+ 093E  E8 FC87						call gravity_barrier_normal
+ 0941  E8 F742						call end_page
+
+						.else
+ 0946  C7 06 09C9 R 0001				mov enemy_speed,1
+ 094C  C7 06 03A3 R 0000				mov score,0
+ 0952  C7 06 09C1 R 0080				mov enemy_total,128
+ 0958  C7 06 09C3 R 0005				mov enemy_num,enemy_easy
+ 095E  C7 06 09C5 R 0000				mov enemy_num_left,0
+ 0964  C7 06 09C7 R 0005				mov enemy_on_screen,enemy_easy
+ 096A  C7 06 03B2 R 0003				mov life_num,3
+ 0970  C7 06 03B4 R 0040				mov enemy_num_max,enemy_max
+ 0976  C7 06 03B6 R 0040				mov enemy_num_left_max,enemy_max
+ 097C  E8 FAF5						call renew_data
+
+ 097F  8C 06 039D R					mov normal_word_segment,es
+ 0983  06						push es
+ 0984  68 A000						push video_segment;super important
+ 0987  07						pop es
+
+							invoke drawplane,color_index,xval,yval
+							invoke drawenemies,enemy_index,addr enemies,enemy_num
+ 09A1  B4 03						mov ah,3
+ 09A3  B0 05						mov al,5
+ 09A5  B7 00						mov bh,0
+ 09A7  CD 16						int 16h
+ 09A9  E8 FD9A						call gravity_barrier_hard
+ 09AC  E8 F6D7						call end_page
+
+						.endif
+					
+ 09AF					waitforstart endp
+
+ 09AF					move_enemy_bullets_down proc
+ 09AF  56					push si
+ 09B0  51					push cx
+
+ 09B1  BE 07B8 R				mov si,offset enemy_bullets_up
+ 09B4  B9 0040					mov cx,enemy_max
+ 09B7						MEBD0:
+ 09B7  81 3C 2424					cmp word ptr [si],'$$'
+ 09BB  74 32						jz next_enemy_bullet
+							invoke drawbullet,setcolorback_index,word ptr [si],word ptr [si + 2]
+							.if word ptr [si + 2] < 190
+ 09CE  83 44 02 02						add word ptr [si + 2],2
+								invoke drawbullet,enemy_index,word ptr [si],word ptr [si + 2]
+							.else
+ 09DE  C7 04 2424						mov word ptr [si],'$$'
+ 09E2  C7 44 02 2424						mov word ptr [si + 2],'$$'
+ 09E7  FF 0E 09C3 R						dec enemy_num
+ 09EB  FF 06 03A3 R						inc score
+							.endif
+ 09EF							next_enemy_bullet:
+ 09EF  83 C6 04							add si,4
+ 09F2  E2 C3							loop MEBD0
+
+ 09F4  59					pop cx
+ 09F5  5E					pop si
+ 09F6  C3					ret
+ 09F7					move_enemy_bullets_down endp
+
+ 09F7					draw_enemy_bullets_up proc search_port:byte,enemys_bullets:ptr dword,num:word
+ 09FA  51					push cx
+ 09FB  56					push si
+ 09FC  66| 50					push eax
+
+ 09FE  8B 4E 08					mov cx,num
+ 0A01  8B 76 06					mov si,enemys_bullets
+ 0A04						DEBU0:
+ 0A04  81 3C 2424					cmp word ptr [si],'$$'
+ 0A08  75 1C						jnz next_bullet
+
+ 0A0A  66| B8 00000140					mov eax,320
+ 0A10  E8 0000 E					call randomrange
+ 0A13  C7 44 02 0000					mov word ptr [si + 2],0
+ 0A18  89 04						mov word ptr [si],ax
+							invoke drawbullet,search_port,word ptr [si],word ptr [si + 2]
+
+ 0A26							next_bullet:
+ 0A26  83 C6 04							add si,4
+ 0A29  E2 D9							loop DEBU0
+ 0A2B  66| 58					pop eax
+ 0A2D  5E					pop si
+ 0A2E  59					pop cx
+						ret
+ 0A33					draw_enemy_bullets_up endp 
+
+ 0A33					check_be_aimed_up proc enemy_bullets:ptr dword
+ 0A36  56					push si
+ 0A37  51					push cx
+ 0A38  50					push ax
+
+ 0A39  8B 76 04					mov si,enemy_bullets
+ 0A3C  B9 0040					mov cx,enemy_max
+ 0A3F						CBAU0:
+ 0A3F  81 3C 2424					cmp word ptr [si],'$$'
+ 0A43  74 54						jz next_bullet
+ 0A45  8B 04						mov ax,word ptr [si]
+ 0A47  2B 06 039F R					sub ax,xval
+							.if ax > 0 && ax < 10
+ 0A55  A1 03A1 R						mov ax,yval
+ 0A58  2B 44 02							sub ax,word ptr [si + 2]
+								.if ax > 0 && ax < 10
+ 0A65  FF 0E 03B2 R							dec life_num
+										;飞机死后回到起始位置
+										invoke drawplane,setcolorback_index,xval,yval
+ 0A76  C7 06 039F R 00A0							mov xval,160
+ 0A7C  C7 06 03A1 R 00A0							mov yval,160
+										invoke drawplane,color_index,xval,yval
+										;检测生命值是否有剩，有的话返回，没有进入终止界面
+ 0A8F  83 3E 03B2 R 00								cmp life_num,0
+ 0A94  75 08									jnz CBAU_back
+ 0A96  E8 F5ED									call end_page
+								.endif
+							.endif
+ 0A99							next_bullet:
+ 0A99  83 C6 04							add si,4
+ 0A9C  E2 A1							loop CBAU0
+ 0A9E					CBAU_back:
+ 0A9E  58					pop ax
+ 0A9F  59					pop cx
+ 0AA0  5E					pop si
+						ret
+ 0AA5					check_be_aimed_up endp
+
+ 0AA5					renew_data_escape proc
+ 0AA5  06					push es
+ 0AA6  50					push ax
+ 0AA7  52					push dx
+ 0AA8  8E 06 039D R				mov es,normal_word_segment
+						;更新score
+ 0AAC  B4 02					mov ah,2
+ 0AAE  B6 00					mov dh,0
+ 0AB0  B2 00					mov dl,0
+ 0AB2  CD 10					int 10h
+						invoke renew_temple,addr scorestring,score
+
+						;更新生命值
+ 0ABE  B4 02					mov ah,2
+ 0AC0  B6 00					mov dh,0
+ 0AC2  B2 0F					mov dl,15
+ 0AC4  CD 10					int 10h
+						invoke renew_temple,addr lifestring,life_num
+
+ 0AD0  5A					pop dx
+ 0AD1  58					pop ax
+ 0AD2  07					pop es
+ 0AD3  C3					ret
+ 0AD4					renew_data_escape endp
+
+ 0AD4					escape_barrier_easy proc
+ 0AD4  66| 50					push eax
+ 0AD6  53					push bx
+ 0AD7  52					push dx
+ 0AD8  C7 06 09B8 R 0028			mov enemy_time,40	;设置产生敌人子弹的时间
+ 0ADE						L0:
+ 0ADE  66| B8 00000096					mov eax,150	;反应时间，和键盘灵敏度，下落速度相关
+ 0AE4  E8 0000 E					call delay
+ 0AE7  B4 11						mov ah,11h
+ 0AE9  CD 16						int 16h
+ 0AEB  74 19						jz nokeypressed ;键盘无按动时，enemy也需要下降
+ 0AED  B4 10						mov ah,10h
+ 0AEF  CD 16						int 16h
+ 0AF1  8A D0						mov dl,al
+								.if dl == 27 ;esc退出游戏
+ 0AF8  B4 00								mov ah,0
+ 0AFA  A0 0000 R							mov al,savepage
+ 0AFD  CD 10								int 10h
+									exit
+								.endif
+ 0B03  E8 F7C0							call checkthekey ;检查是否为有效按键
+ 0B06							nokeypressed:
+ 0B06  E8 F722							call move_bullet ;射出的子弹移动
+ 0B09  E8 FEA3							call move_enemy_bullets_down
+ 0B0C  E8 FF96							call renew_data_escape
+								invoke check_be_aimed_up,addr enemy_bullets_up
+ 0B15  FF 0E 09B8 R						dec enemy_time	;距敌人子弹射出的时间减少
+ 0B19  83 3E 09B8 R 00						cmp enemy_time,0
+ 0B1E  75 2B							jnz next_turn
+ 0B20  66| B8 00000005						mov eax,5
+ 0B26  E8 0000 E						call randomrange
+ 0B29  40							inc ax
+ 0B2A  03 06 09C3 R						add ax,enemy_num
+								.if ax > enemy_max
+ 0B33  B8 0040								mov ax,enemy_max
+								.endif
+ 0B36  A3 09C3 R						mov enemy_num,ax
+								invoke draw_enemy_bullets_up,enemy_index,addr enemy_bullets_up,enemy_num
+ 0B45  C7 06 09B8 R 0028					mov enemy_time,40
+ 0B4B								next_turn:
+ 0B4B  EB 91								jmp L0
+
+ 0B4D  5A					pop dx
+ 0B4E  5B					pop bx
+ 0B4F  66| 58					pop eax
+ 0B51  C3					ret
+ 0B52					escape_barrier_easy endp
+
+					;enemy_flags
+ 0B52					move_enemy_bullets_up_and_down proc
+ 0B52  56					push si
+ 0B53  51					push cx
+ 0B54  57					push di
+ 0B55  66| 50					push eax
+
+ 0B57  BE 07B8 R				mov si,offset enemy_bullets_up
+ 0B5A  BF 05B8 R				mov di,offset enemy_flags
+ 0B5D  B9 0040					mov cx,enemy_max
+ 0B60						MEBUD0:
+ 0B60  81 3C 2424					cmp word ptr [si],'$$'
+ 0B64  74 71						jz next_enemy_bullet
+							invoke drawbullet,setcolorback_index,word ptr [si],word ptr [si + 2]
+
+ 0B70  66| 8B 05					mov eax,dword ptr [di]
+ 0B73  66| 83 E0 01					and eax,1
+
+							.if word ptr [si + 2] > 190 && ax == 0
+ 0B82  66| FF 05						inc dword ptr [di]
+ 0B85  40							inc ax
+							.elseif word ptr [si + 2] < 10 && ax == 1
+ 0B93  66| FF 05						inc dword ptr [di]
+ 0B96  48							dec ax
+							.elseif dword ptr [di] == 3
+ 0B9F  C7 04 2424						mov word ptr [si],'$$'
+ 0BA3  C7 44 02 2424						mov word ptr [si + 2],'$$'
+ 0BA8  66| C7 05 00000000					mov dword ptr [di],0
+ 0BAF  FF 06 03A3 R						inc score
+ 0BB3  EB 22							jmp next_enemy_bullet
+							.endif
+
+							.if ax == 0
+ 0BB9  83 44 02 02						add word ptr [si + 2],2
+								invoke drawbullet,enemy_index,word ptr [si],word ptr [si + 2]
+							.else
+ 0BC9  83 6C 02 02						sub word ptr [si + 2],2
+								invoke drawbullet,enemy_index,word ptr [si],word ptr [si + 2]
+							.endif
+
+ 0BD7							next_enemy_bullet:
+ 0BD7  83 C6 04							add si,4
+ 0BDA  83 C7 04							add di,4
+ 0BDD  E2 81							loop MEBUD0
+
+ 0BDF  66| 58					pop eax
+ 0BE1  5F					pop di
+ 0BE2  59					pop cx
+ 0BE3  5E					pop si
+ 0BE4  C3					ret
+ 0BE5					move_enemy_bullets_up_and_down endp
+
+ 0BE5					escape_barrier_normal proc
+ 0BE5  66| 50					push eax
+ 0BE7  53					push bx
+ 0BE8  52					push dx
+ 0BE9  C7 06 09B8 R 0028			mov enemy_time,40	;设置产生敌人子弹的时间
+ 0BEF						L0:
+ 0BEF  66| B8 00000096					mov eax,150	;反应时间，和键盘灵敏度，下落速度相关
+ 0BF5  E8 0000 E					call delay
+ 0BF8  B4 11						mov ah,11h
+ 0BFA  CD 16						int 16h
+ 0BFC  74 19						jz nokeypressed ;键盘无按动时，enemy也需要下降
+ 0BFE  B4 10						mov ah,10h
+ 0C00  CD 16						int 16h
+ 0C02  8A D0						mov dl,al
+								.if dl == 27 ;esc退出游戏
+ 0C09  B4 00								mov ah,0
+ 0C0B  A0 0000 R							mov al,savepage
+ 0C0E  CD 10								int 10h
+									exit
+								.endif
+ 0C14  E8 F6AF							call checkthekey ;检查是否为有效按键
+ 0C17							nokeypressed:
+ 0C17  E8 F611							call move_bullet ;射出的子弹移动
+ 0C1A  E8 FF35							call move_enemy_bullets_up_and_down
+ 0C1D  E8 FE85							call renew_data_escape
+								invoke check_be_aimed_up,addr enemy_bullets_up
+ 0C26  FF 0E 09B8 R						dec enemy_time	;距敌人子弹射出的时间减少
+ 0C2A  83 3E 09B8 R 00						cmp enemy_time,0
+ 0C2F  75 2B							jnz next_turn
+ 0C31  66| B8 00000005						mov eax,5
+ 0C37  E8 0000 E						call randomrange
+ 0C3A  40							inc ax
+ 0C3B  03 06 09C3 R						add ax,enemy_num
+								.if ax > enemy_max
+ 0C44  B8 0040								mov ax,enemy_max
+								.endif
+ 0C47  A3 09C3 R						mov enemy_num,ax
+								invoke draw_enemy_bullets_up,enemy_index,addr enemy_bullets_up,enemy_num
+ 0C56  C7 06 09B8 R 0028					mov enemy_time,40
+ 0C5C								next_turn:
+ 0C5C  EB 91								jmp L0
+
+ 0C5E  5A					pop dx
+ 0C5F  5B					pop bx
+ 0C60  66| 58					pop eax
+ 0C62  C3					ret
+ 0C63					escape_barrier_normal endp
+
+ 0C63					draw_bullet_left proc search_port:byte,x:word,y:word
+ 0C66  57					push di
+ 0C67  50					push ax
+ 0C68  51					push cx
+
+ 0C69  B8 0140					mov ax,320
+ 0C6C  F7 66 08					mul y
+ 0C6F  03 46 06					add ax,x
+						
+ 0C72  B9 000A					mov cx,10
+ 0C75  8B F8					mov di,ax
+ 0C77  8A 46 04					mov al,search_port
+ 0C7A					DP1:
+ 0C7A  26: 88 05				mov byte ptr es:[di],al
+ 0C7D  83 C7 01					add di,1
+ 0C80  E2 F8					loop DP1
+
+ 0C82  59					pop cx
+ 0C83  58					pop ax
+ 0C84  5F					pop di
+						ret
+ 0C89					draw_bullet_left endp
+
+ 0C89					draw_enemy_bullets_left proc search_port:byte,enemys_bullets:ptr dword,num:word
+ 0C8C  51					push cx
+ 0C8D  56					push si
+ 0C8E  66| 50					push eax
+
+ 0C90  8B 4E 08					mov cx,num
+ 0C93  8B 76 06					mov si,enemys_bullets
+ 0C96						DEBL0:
+ 0C96  81 3C 2424					cmp word ptr [si],'$$'
+ 0C9A  75 1C						jnz next_bullet
+
+ 0C9C  66| B8 000000A0					mov eax,160
+ 0CA2  E8 0000 E					call randomrange
+ 0CA5  C7 04 0000					mov word ptr [si],0
+ 0CA9  89 44 02						mov word ptr [si + 2],ax
+							invoke draw_bullet_left,search_port,word ptr [si],word ptr [si + 2]
+
+ 0CB8							next_bullet:
+ 0CB8  83 C6 04							add si,4
+ 0CBB  E2 D9							loop DEBL0
+ 0CBD  66| 58					pop eax
+ 0CBF  5E					pop si
+ 0CC0  59					pop cx
+						ret
+ 0CC5					draw_enemy_bullets_left endp
+
+ 0CC5					move_enemy_bullets_left_and_right proc
+ 0CC5  56					push si
+ 0CC6  51					push cx
+ 0CC7  57					push di
+ 0CC8  66| 50					push eax
+
+ 0CCA  BE 08B8 R				mov si,offset enemy_bullets_left
+ 0CCD  BF 06B8 R				mov di,offset enemy_flags_left
+ 0CD0  B9 0040					mov cx,enemy_max
+ 0CD3						MEBLR0:
+ 0CD3  81 3C 2424					cmp word ptr [si],'$$'
+ 0CD7  74 6D						jz next_enemy_bullet
+							invoke draw_bullet_left,setcolorback_index,word ptr [si],word ptr [si + 2]
+
+ 0CE3  66| 8B 05					mov eax,dword ptr [di]
+ 0CE6  66| 83 E0 01					and eax,1
+
+							.if word ptr [si] > 310 && ax == 0
+ 0CF4  66| FF 05						inc dword ptr [di]
+ 0CF7  40							inc ax
+							.elseif word ptr [si] < 10 && ax == 1
+ 0D04  66| FF 05						inc dword ptr [di]
+ 0D07  48							dec ax
+							.elseif dword ptr [di] == 3
+ 0D10  C7 04 2424						mov word ptr [si],'$$'
+ 0D14  C7 44 02 2424						mov word ptr [si + 2],'$$'
+ 0D19  FF 06 03A3 R						inc score
+ 0D1D  66| C7 05 00000000					mov dword ptr [di],0
+ 0D24  EB 20							jmp next_enemy_bullet
+							.endif
+
+							.if ax == 0
+ 0D2A  83 04 02							add word ptr [si],2
+								invoke draw_bullet_left,enemy_index,word ptr [si],word ptr [si + 2]
+							.else
+ 0D39  83 2C 02							sub word ptr [si],2
+								invoke draw_bullet_left,enemy_index,word ptr [si],word ptr [si + 2]
+							.endif
+
+ 0D46							next_enemy_bullet:
+ 0D46  83 C6 04							add si,4
+ 0D49  83 C7 04							add di,4
+ 0D4C  E2 85							loop MEBLR0
+
+ 0D4E  66| 58					pop eax
+ 0D50  5F					pop di
+ 0D51  59					pop cx
+ 0D52  5E					pop si
+ 0D53  C3					ret
+ 0D54					move_enemy_bullets_left_and_right endp
+
+ 0D54					check_be_aimed_left proc enemy_bullets:ptr dword
+ 0D57  56					push si
+ 0D58  51					push cx
+ 0D59  50					push ax
+
+ 0D5A  8B 76 04					mov si,enemy_bullets
+ 0D5D  B9 0040					mov cx,enemy_max
+ 0D60						CBAL0:
+ 0D60  81 3C 2424					cmp word ptr [si],'$$'
+ 0D64  74 53						jz next_bullet
+ 0D66  A1 039F R					mov ax,xval
+ 0D69  2B 04						sub ax,word ptr [si]
+							.if ax > 0 && ax < 10
+ 0D75  A1 03A1 R						mov ax,yval
+ 0D78  2B 44 02							sub ax,word ptr [si + 2]
+								.if ax > 0 && ax < 10
+ 0D85  FF 0E 03B2 R							dec life_num
+										;飞机死后回到起始位置
+										invoke drawplane,setcolorback_index,xval,yval
+ 0D96  C7 06 039F R 00A0							mov xval,160
+ 0D9C  C7 06 03A1 R 00A0							mov yval,160
+										invoke drawplane,color_index,xval,yval
+										;检测生命值是否有剩，有的话返回，没有进入终止界面
+ 0DAF  83 3E 03B2 R 00								cmp life_num,0
+ 0DB4  75 08									jnz CBAL_back
+ 0DB6  E8 F2CD									call end_page
+								.endif
+							.endif
+ 0DB9							next_bullet:
+ 0DB9  83 C6 04							add si,4
+ 0DBC  E2 A2							loop CBAL0
+ 0DBE						CBAL_back:
+ 0DBE  58						pop ax
+ 0DBF  59						pop cx
+ 0DC0  5E						pop si
+							ret
+ 0DC5					check_be_aimed_left endp
+
+ 0DC5					escape_barrier_hard proc
+ 0DC5  66| 50					push eax
+ 0DC7  53					push bx
+ 0DC8  52					push dx
+ 0DC9  C7 06 09B8 R 001E			mov enemy_time,30	;设置产生敌人子弹的时间
+ 0DCF						L0:
+ 0DCF  66| B8 00000096					mov eax,150	;反应时间，和键盘灵敏度，下落速度相关
+ 0DD5  E8 0000 E					call delay
+ 0DD8  B4 11						mov ah,11h
+ 0DDA  CD 16						int 16h
+ 0DDC  74 19						jz nokeypressed ;键盘无按动时，enemy也需要下降
+ 0DDE  B4 10						mov ah,10h
+ 0DE0  CD 16						int 16h
+ 0DE2  8A D0						mov dl,al
+								.if dl == 27 ;esc退出游戏
+ 0DE9  B4 00								mov ah,0
+ 0DEB  A0 0000 R							mov al,savepage
+ 0DEE  CD 10								int 10h
+									exit
+								.endif
+ 0DF4  E8 F4CF							call checkthekey ;检查是否为有效按键
+ 0DF7							nokeypressed:
+ 0DF7  E8 F431							call move_bullet ;射出的子弹移动
+ 0DFA  E8 FD55							call move_enemy_bullets_up_and_down
+ 0DFD  E8 FEC5							call move_enemy_bullets_left_and_right
+ 0E00  E8 FCA2							call renew_data_escape
+								invoke check_be_aimed_up,addr enemy_bullets_up
+								invoke check_be_aimed_left,addr enemy_bullets_left
+ 0E0F  FF 0E 09B8 R						dec enemy_time	;距敌人子弹射出的时间减少
+ 0E13  83 3E 09B8 R 00						cmp enemy_time,0
+ 0E18  75 5F							jnz next_turn
+ 0E1A  66| B8 00000002						mov eax,2
+ 0E20  E8 0000 E						call randomrange
+								.if ax == 0
+ 0E27  66| B8 00000005							mov eax,5
+ 0E2D  E8 0000 E							call randomrange
+ 0E30  40								inc ax
+ 0E31  03 06 09C3 R							add ax,enemy_num
+									.if ax > enemy_max
+ 0E3A  B8 0040									mov ax,enemy_max
+									.endif
+ 0E3D  A3 09C3 R							mov enemy_num,ax
+									invoke draw_enemy_bullets_up,enemy_index,addr enemy_bullets_up,enemy_num
+								.else
+ 0E4E  66| B8 00000005							mov eax,5
+ 0E54  E8 0000 E							call randomrange
+ 0E57  40								inc ax
+ 0E58  03 06 09C5 R							add ax,enemy_num_left
+									.if ax > enemy_max
+ 0E61  B8 0040									mov ax,enemy_max
+									.endif
+ 0E64  A3 09C5 R							mov enemy_num_left,ax
+									invoke draw_enemy_bullets_left,enemy_index,addr enemy_bullets_left,enemy_num_left
+								.endif
+ 0E73  C7 06 09B8 R 001E						mov enemy_time,30
+ 0E79								next_turn:
+ 0E79  E9 FF53								jmp L0
+
+ 0E7C  5A					pop dx
+ 0E7D  5B					pop bx
+ 0E7E  66| 58					pop eax
+ 0E80  C3					ret
+ 0E81					escape_barrier_hard endp
+
+ 0E81					waitforescape proc
+ 0E81  50					push ax
+ 0E82  53					push bx
+
+						invoke drawset,63,63,63,color_index
+						invoke drawset,0,0,35,setcolorback_index
+						invoke drawset,63,35,35,enemy_index
+						invoke drawset,63,0,0,enemy_aimed
+						.if game_difficulty == '1'
+ 0EB6  C7 06 03A3 R 0000				mov score,0
+ 0EBC  C7 06 03B2 R 0003				mov life_num,3
+ 0EC2  C7 06 09C3 R 0005				mov enemy_num,enemy_easy
+
+ 0EC8  8C 06 039D R					mov normal_word_segment,es
+ 0ECC  06						push es
+ 0ECD  68 A000						push video_segment;super important
+ 0ED0  07						pop es
+
+							invoke drawplane,color_index,xval,yval
+							invoke draw_enemy_bullets_up ,enemy_index,addr enemy_bullets_up,enemy_num
+							
+ 0EEA  E8 FBE7						call escape_barrier_easy
+
+						.elseif game_difficulty == '2'
+ 0EF6  C7 06 03A3 R 0000				mov score,0
+ 0EFC  C7 06 03B2 R 0003				mov life_num,3
+ 0F02  C7 06 09C3 R 0005				mov enemy_num,enemy_easy
+
+ 0F08  8C 06 039D R					mov normal_word_segment,es
+ 0F0C  06						push es
+ 0F0D  68 A000						push video_segment;super important
+ 0F10  07						pop es
+
+							invoke drawplane,color_index,xval,yval
+							invoke draw_enemy_bullets_up ,enemy_index,addr enemy_bullets_up,enemy_num
+							
+ 0F2A  E8 FCB8						call escape_barrier_normal
+						.else
+ 0F2F  C7 06 03A3 R 0000				mov score,0
+ 0F35  C7 06 03B2 R 0003				mov life_num,3
+ 0F3B  C7 06 09C3 R 0005				mov enemy_num,enemy_easy
+
+ 0F41  8C 06 039D R					mov normal_word_segment,es
+ 0F45  06						push es
+ 0F46  68 A000						push video_segment;super important
+ 0F49  07						pop es
+
+							invoke drawplane,color_index,xval,yval
+							invoke draw_enemy_bullets_up ,enemy_index,addr enemy_bullets_up,enemy_num
+							
+ 0F63  E8 FE5F						call escape_barrier_hard
+						.endif
+
+ 0F66  5B					pop bx
+ 0F67  58					pop ax
+ 0F68  C3					ret
+ 0F69					waitforescape endp
+
+					end main
+Microsoft (R) Macro Assembler Version 14.16.27032.1	    11/03/19 14:40:51
+gameTry.asm						     Symbols 2 - 1
+
+
+
+
+Structures and Unions:
+
+                N a m e                  Size
+                                         Offset      Type
+
+CursorPosStruc . . . . . . . . .	 0002
+  Ycoord . . . . . . . . . . . .	 0000	     Byte
+  Xcoord . . . . . . . . . . . .	 0001	     Byte
+ExtGetDskFreSpcStruc . . . . . .	 002C
+  StructSize . . . . . . . . . .	 0000	     Word
+  Level  . . . . . . . . . . . .	 0002	     Word
+  SectorsPerCluster  . . . . . .	 0004	     DWord
+  BytesPerSector . . . . . . . .	 0008	     DWord
+  AvailableClusters  . . . . . .	 000C	     DWord
+  TotalClusters  . . . . . . . .	 0010	     DWord
+  AvailablePhysSectors . . . . .	 0014	     DWord
+  TotalPhysSectors . . . . . . .	 0018	     DWord
+  AvailableAllocationUnits . . .	 001C	     DWord
+  TotalAllocationUnits . . . . .	 0020	     DWord
+  Rsvd . . . . . . . . . . . . .	 0024	     DWord
+FPU_ENVIRON  . . . . . . . . . .	 001C
+  controlWord  . . . . . . . . .	 0000	     Word
+  statusWord . . . . . . . . . .	 0004	     Word
+  tagWord  . . . . . . . . . . .	 0008	     Word
+  instrPtrLow  . . . . . . . . .	 000C	     Word
+  opcodeAndInstrPtrHi  . . . . .	 0010	     DWord
+  operandPtrLow  . . . . . . . .	 0014	     Word
+  operandPtrHi . . . . . . . . .	 0018	     DWord
+TimeRecord . . . . . . . . . . .	 0004
+  hours  . . . . . . . . . . . .	 0000	     Byte
+  minutes  . . . . . . . . . . .	 0001	     Byte
+  seconds  . . . . . . . . . . .	 0002	     Byte
+  hhss . . . . . . . . . . . . .	 0003	     Byte
+VideoInfoStruc . . . . . . . . .	 0041
+  supportedInfoPtr . . . . . . .	 0000	     DWord
+  videoMode  . . . . . . . . . .	 0004	     Byte
+  numCharColumns . . . . . . . .	 0005	     Word
+  videoBufferLen . . . . . . . .	 0007	     Word
+  videoBufferStartPtr  . . . . .	 0009	     Word
+  cursors  . . . . . . . . . . .	 000B	     Word
+  cursorStartLine  . . . . . . .	 001B	     Byte
+  cursorEndLine  . . . . . . . .	 001C	     Byte
+  activeDisplayPage  . . . . . .	 001D	     Byte
+  adapterBasePortAddr  . . . . .	 001E	     Word
+  currentRegister3B8or3D8  . . .	 0020	     Byte
+  currentRegister3B9or3D9  . . .	 0021	     Byte
+  numCharRows  . . . . . . . . .	 0022	     Byte
+  characterScanHeight  . . . . .	 0023	     Word
+  activeDisplayCode  . . . . . .	 0025	     Byte
+  inactiveDisplayCode  . . . . .	 0026	     Byte
+  numberOfColors . . . . . . . .	 0027	     Word
+  numberOfVideoPages . . . . . .	 0029	     Byte
+  numberOfScanLines  . . . . . .	 002A	     Word
+  primaryCharBlock . . . . . . .	 002C	     Byte
+  secondaryCharBlock . . . . . .	 002D	     Byte
+  miscStateInfo  . . . . . . . .	 002E	     Byte
+  videoMemAvail  . . . . . . . .	 0032	     Byte
+  savePointerStateInfo . . . . .	 0033	     Byte
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+DGROUP . . . . . . . . . . . . .	GROUP
+_DATA  . . . . . . . . . . . . .	16 Bit	 0A1D	  Word	  Public  'DATA'	
+STACK  . . . . . . . . . . . . .	16 Bit	 0200	  Para	  Stack	  'STACK'	 
+_TEXT  . . . . . . . . . . . . .	16 Bit	 0F69	  Word	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+Clrscr . . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+Crlf . . . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+Delay  . . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+DumpMem  . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+DumpRegs . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+GetCommandtail . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+GetMaxXY . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+GetMseconds  . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+Gotoxy . . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+IsDigit  . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+Random32 . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+RandomRange  . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+Randomize  . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+ReadChar . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+ReadFloat  . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+ReadHex  . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+ReadInt  . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+ReadString . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+SetTextColor . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+ShowFPUStack . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+Str_compare  . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+Str_copy . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+Str_length . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+Str_trim . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+Str_ucase  . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+WaitMsg  . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+WriteBinB  . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+WriteBin . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+WriteChar  . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+WriteDec . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+WriteFloat . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+WriteHexB  . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+WriteHex . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+WriteInt . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+WriteString  . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+check_be_aimed_left  . . . . . .	P Near	 0D54	  _TEXT	Length= 0071 Public STDCALL
+  enemy_bullets  . . . . . . . .	Word	 bp + 0004
+  CBAL0  . . . . . . . . . . . .	L Near	 0D60	  _TEXT	
+  next_bullet  . . . . . . . . .	L Near	 0DB9	  _TEXT	
+  CBAL_back  . . . . . . . . . .	L Near	 0DBE	  _TEXT	
+check_be_aimed_up  . . . . . . .	P Near	 0A33	  _TEXT	Length= 0072 Public STDCALL
+  enemy_bullets  . . . . . . . .	Word	 bp + 0004
+  CBAU0  . . . . . . . . . . . .	L Near	 0A3F	  _TEXT	
+  next_bullet  . . . . . . . . .	L Near	 0A99	  _TEXT	
+  CBAU_back  . . . . . . . . . .	L Near	 0A9E	  _TEXT	
+check_gravity_living . . . . . .	P Near	 03ED	  _TEXT	Length= 0074 Public STDCALL
+  enemys . . . . . . . . . . . .	Word	 bp + 0004
+  CGL0 . . . . . . . . . . . . .	L Near	 03F9	  _TEXT	
+  next_check . . . . . . . . . .	L Near	 0452	  _TEXT	
+  CGL_back . . . . . . . . . . .	L Near	 0457	  _TEXT	
+checkaim . . . . . . . . . . . .	P Near	 036E	  _TEXT	Length= 007F Public STDCALL
+  enemys . . . . . . . . . . . .	Word	 bp + 0004
+  num  . . . . . . . . . . . . .	Word	 bp + 0006
+  CA0  . . . . . . . . . . . . .	L Near	 037A	  _TEXT	
+  CA1  . . . . . . . . . . . . .	L Near	 0387	  _TEXT	
+  nextenemy  . . . . . . . . . .	L Near	 03DB	  _TEXT	
+  nextbullet . . . . . . . . . .	L Near	 03E0	  _TEXT	
+checkthekey  . . . . . . . . . .	P Near	 02C6	  _TEXT	Length= 00A8 Public STDCALL
+  gotw . . . . . . . . . . . . .	L Near	 030C	  _TEXT	
+  gots . . . . . . . . . . . . .	L Near	 0320	  _TEXT	
+  gota . . . . . . . . . . . . .	L Near	 0334	  _TEXT	
+  gotd . . . . . . . . . . . . .	L Near	 0348	  _TEXT	
+  gotnewposition . . . . . . . .	L Near	 035A	  _TEXT	
+  shootnow . . . . . . . . . . .	L Near	 0369	  _TEXT	
+  quit . . . . . . . . . . . . .	L Near	 036C	  _TEXT	
+draw_bullet_left . . . . . . . .	P Near	 0C63	  _TEXT	Length= 0026 Public STDCALL
+  search_port  . . . . . . . . .	Byte	 bp + 0004
+  x  . . . . . . . . . . . . . .	Word	 bp + 0006
+  y  . . . . . . . . . . . . . .	Word	 bp + 0008
+  DP1  . . . . . . . . . . . . .	L Near	 0C7A	  _TEXT	
+draw_enemy_bullets_left  . . . .	P Near	 0C89	  _TEXT	Length= 003C Public STDCALL
+  search_port  . . . . . . . . .	Byte	 bp + 0004
+  enemys_bullets . . . . . . . .	Word	 bp + 0006
+  num  . . . . . . . . . . . . .	Word	 bp + 0008
+  DEBL0  . . . . . . . . . . . .	L Near	 0C96	  _TEXT	
+  next_bullet  . . . . . . . . .	L Near	 0CB8	  _TEXT	
+draw_enemy_bullets_up  . . . . .	P Near	 09F7	  _TEXT	Length= 003C Public STDCALL
+  search_port  . . . . . . . . .	Byte	 bp + 0004
+  enemys_bullets . . . . . . . .	Word	 bp + 0006
+  num  . . . . . . . . . . . . .	Word	 bp + 0008
+  DEBU0  . . . . . . . . . . . .	L Near	 0A04	  _TEXT	
+  next_bullet  . . . . . . . . .	L Near	 0A26	  _TEXT	
+drawbullet . . . . . . . . . . .	P Near	 0155	  _TEXT	Length= 0027 Public STDCALL
+  search_port  . . . . . . . . .	Byte	 bp + 0004
+  x  . . . . . . . . . . . . . .	Word	 bp + 0006
+  y  . . . . . . . . . . . . . .	Word	 bp + 0008
+  DP1  . . . . . . . . . . . . .	L Near	 016C	  _TEXT	
+drawenemies  . . . . . . . . . .	P Near	 01AD	  _TEXT	Length= 0047 Public STDCALL
+  search_port  . . . . . . . . .	Byte	 bp + 0004
+  enemys . . . . . . . . . . . .	Word	 bp + 0006
+  num  . . . . . . . . . . . . .	Word	 bp + 0008
+  E0 . . . . . . . . . . . . . .	L Near	 01BA	  _TEXT	
+  new_a_enemy  . . . . . . . . .	L Near	 01C2	  _TEXT	
+  next_enemy . . . . . . . . . .	L Near	 01E7	  _TEXT	
+drawenemy  . . . . . . . . . . .	P Near	 017C	  _TEXT	Length= 0031 Public STDCALL
+  search_port  . . . . . . . . .	Byte	 bp + 0004
+  x  . . . . . . . . . . . . . .	Word	 bp + 0006
+  y  . . . . . . . . . . . . . .	Word	 bp + 0008
+  DP2  . . . . . . . . . . . . .	L Near	 0193	  _TEXT	
+  DP22 . . . . . . . . . . . . .	L Near	 0198	  _TEXT	
+drawline . . . . . . . . . . . .	P Near	 0000	  Length= 0000 External STDCALL
+drawplane  . . . . . . . . . . .	P Near	 0100	  _TEXT	Length= 0055 Public STDCALL
+  search_port  . . . . . . . . .	Byte	 bp + 0004
+  x  . . . . . . . . . . . . . .	Word	 bp + 0006
+  y  . . . . . . . . . . . . . .	Word	 bp + 0008
+  DP0  . . . . . . . . . . . . .	L Near	 011B	  _TEXT	
+  DP00 . . . . . . . . . . . . .	L Near	 0128	  _TEXT	
+  DP000  . . . . . . . . . . . .	L Near	 0136	  _TEXT	
+  DP0000 . . . . . . . . . . . .	L Near	 0145	  _TEXT	
+drawset  . . . . . . . . . . . .	P Near	 00DF	  _TEXT	Length= 0021 Public STDCALL
+  myred  . . . . . . . . . . . .	Byte	 bp + 0004
+  mygreen  . . . . . . . . . . .	Byte	 bp + 0006
+  myblue . . . . . . . . . . . .	Byte	 bp + 0008
+  search_port  . . . . . . . . .	Byte	 bp + 000A
+end_page . . . . . . . . . . . .	P Near	 0086	  _TEXT	Length= 0031 Public STDCALL
+escape_barrier_easy  . . . . . .	P Near	 0AD4	  _TEXT	Length= 007E Public STDCALL
+  L0 . . . . . . . . . . . . . .	L Near	 0ADE	  _TEXT	
+  nokeypressed . . . . . . . . .	L Near	 0B06	  _TEXT	
+  next_turn  . . . . . . . . . .	L Near	 0B4B	  _TEXT	
+escape_barrier_hard  . . . . . .	P Near	 0DC5	  _TEXT	Length= 00BC Public STDCALL
+  L0 . . . . . . . . . . . . . .	L Near	 0DCF	  _TEXT	
+  nokeypressed . . . . . . . . .	L Near	 0DF7	  _TEXT	
+  next_turn  . . . . . . . . . .	L Near	 0E79	  _TEXT	
+escape_barrier_normal  . . . . .	P Near	 0BE5	  _TEXT	Length= 007E Public STDCALL
+  L0 . . . . . . . . . . . . . .	L Near	 0BEF	  _TEXT	
+  nokeypressed . . . . . . . . .	L Near	 0C17	  _TEXT	
+  next_turn  . . . . . . . . . .	L Near	 0C5C	  _TEXT	
+gravity_barrier_easy . . . . . .	P Near	 04B5	  _TEXT	Length= 00B4 Public STDCALL
+  L0 . . . . . . . . . . . . . .	L Near	 04C1	  _TEXT	
+  nokeypressed . . . . . . . . .	L Near	 04E9	  _TEXT	
+  enemy_ready_move . . . . . . .	L Near	 0509	  _TEXT	
+  enemy_not_ready  . . . . . . .	L Near	 0512	  _TEXT	
+  renew_enemy_screen . . . . . .	L Near	 0529	  _TEXT	
+  gravity_enemies  . . . . . . .	L Near	 053D	  _TEXT	
+  gravity_back . . . . . . . . .	L Near	 0564	  _TEXT	
+gravity_barrier_hard . . . . . .	P Near	 0746	  _TEXT	Length= 0113 Public STDCALL
+  L0 . . . . . . . . . . . . . .	L Near	 0758	  _TEXT	
+  nokeypressed . . . . . . . . .	L Near	 0780	  _TEXT	
+  enemy_ready_move . . . . . . .	L Near	 07B4	  _TEXT	
+  enemy_not_ready  . . . . . . .	L Near	 07BD	  _TEXT	
+  gravity_enemies  . . . . . . .	L Near	 07D6	  _TEXT	
+  gravity_back . . . . . . . . .	L Near	 0854	  _TEXT	
+gravity_barrier_normal . . . . .	P Near	 05C8	  _TEXT	Length= 00BF Public STDCALL
+  L0 . . . . . . . . . . . . . .	L Near	 05DA	  _TEXT	
+  nokeypressed . . . . . . . . .	L Near	 0602	  _TEXT	
+  enemy_ready_move . . . . . . .	L Near	 0626	  _TEXT	
+  enemy_not_ready  . . . . . . .	L Near	 062F	  _TEXT	
+  gravity_enemies  . . . . . . .	L Near	 0646	  _TEXT	
+  gravity_back . . . . . . . . .	L Near	 0682	  _TEXT	
+main . . . . . . . . . . . . . .	P Near	 0000	  _TEXT	Length= 0034 Public STDCALL
+move_bullet  . . . . . . . . . .	P Near	 022B	  _TEXT	Length= 004B Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 0233	  _TEXT	
+  L2 . . . . . . . . . . . . . .	L Near	 023A	  _TEXT	
+  changebullet . . . . . . . . .	L Near	 025A	  _TEXT	
+  again  . . . . . . . . . . . .	L Near	 026D	  _TEXT	
+move_enemy_bullets_down  . . . .	P Near	 09AF	  _TEXT	Length= 0048 Public STDCALL
+  MEBD0  . . . . . . . . . . . .	L Near	 09B7	  _TEXT	
+  next_enemy_bullet  . . . . . .	L Near	 09EF	  _TEXT	
+move_enemy_bullets_left_and_right 	P Near	 0CC5	  _TEXT	Length= 008F Public STDCALL
+  MEBLR0 . . . . . . . . . . . .	L Near	 0CD3	  _TEXT	
+  next_enemy_bullet  . . . . . .	L Near	 0D46	  _TEXT	
+move_enemy_bullets_up_and_down .	P Near	 0B52	  _TEXT	Length= 0093 Public STDCALL
+  MEBUD0 . . . . . . . . . . . .	L Near	 0B60	  _TEXT	
+  next_enemy_bullet  . . . . . .	L Near	 0BD7	  _TEXT	
+move_enemy_hard  . . . . . . . .	P Near	 0707	  _TEXT	Length= 003F Public STDCALL
+  MEH0 . . . . . . . . . . . . .	L Near	 0715	  _TEXT	
+  next_enemy0  . . . . . . . . .	L Near	 071E	  _TEXT	
+  MEH1 . . . . . . . . . . . . .	L Near	 072F	  _TEXT	
+  next_enemy1  . . . . . . . . .	L Near	 0738	  _TEXT	
+  MEH_quit . . . . . . . . . . .	L Near	 0740	  _TEXT	
+move_enemy_normal  . . . . . . .	P Near	 0569	  _TEXT	Length= 005F Public STDCALL
+  MEN0 . . . . . . . . . . . . .	L Near	 0575	  _TEXT	
+  next_enemy . . . . . . . . . .	L Near	 05BC	  _TEXT	
+  MEN_quit . . . . . . . . . . .	L Near	 05C4	  _TEXT	
+move_enemy . . . . . . . . . . .	P Near	 0276	  _TEXT	Length= 0050 Public STDCALL
+  E1 . . . . . . . . . . . . . .	L Near	 027E	  _TEXT	
+  E2 . . . . . . . . . . . . . .	L Near	 0285	  _TEXT	
+  changeenemy  . . . . . . . . .	L Near	 02A6	  _TEXT	
+  next . . . . . . . . . . . . .	L Near	 02BD	  _TEXT	
+move_left_and_right  . . . . . .	P Near	 06C9	  _TEXT	Length= 003E Public STDCALL
+move_up_and_down . . . . . . . .	P Near	 0687	  _TEXT	Length= 0042 Public STDCALL
+renew_data_escape  . . . . . . .	P Near	 0AA5	  _TEXT	Length= 002F Public STDCALL
+renew_data . . . . . . . . . . .	P Near	 0474	  _TEXT	Length= 0041 Public STDCALL
+renew_temple . . . . . . . . . .	P Near	 0461	  _TEXT	Length= 0013 Public STDCALL
+  string . . . . . . . . . . . .	Word	 bp + 0004
+  num  . . . . . . . . . . . . .	Word	 bp + 0006
+setbackground  . . . . . . . . .	P Near	 00CC	  _TEXT	Length= 0013 Public STDCALL
+setmodel . . . . . . . . . . . .	P Near	 00B7	  _TEXT	Length= 0015 Public STDCALL
+  modeltype  . . . . . . . . . .	Byte	 bp + 0004
+shoot  . . . . . . . . . . . . .	P Near	 01F4	  _TEXT	Length= 0037 Public STDCALL
+  s0 . . . . . . . . . . . . . .	L Near	 01FD	  _TEXT	
+  gotposition  . . . . . . . . .	L Near	 0205	  _TEXT	
+  nextposition . . . . . . . . .	L Near	 0218	  _TEXT	
+  squit  . . . . . . . . . . . .	L Near	 021D	  _TEXT	
+startpage  . . . . . . . . . . .	P Near	 0034	  _TEXT	Length= 0052 Public STDCALL
+  get_game_mode  . . . . . . . .	L Near	 0046	  _TEXT	
+  get_difficulty . . . . . . . .	L Near	 006D	  _TEXT	
+waitforescape  . . . . . . . . .	P Near	 0E81	  _TEXT	Length= 00E8 Public STDCALL
+waitforstart . . . . . . . . . .	P Near	 0859	  _TEXT	Length= 0156 Public STDCALL
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 0000h	 
+@DataSize  . . . . . . . . . . .	Number	 0000h	 
+@Interface . . . . . . . . . . .	Number	 0003h	 
+@Model . . . . . . . . . . . . .	Number	 0002h	 
+@cmdline . . . . . . . . . . . .	Text   	 OFFSET __98765765cmdline
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 DGROUP
+@fardata?  . . . . . . . . . . .	Text   	 FAR_BSS
+@fardata . . . . . . . . . . . .	Text   	 FAR_DATA
+@stack . . . . . . . . . . . . .	Text   	 DGROUP
+ACTION_CREATED_OPENED  . . . . .	Number	 0002h	 
+ACTION_OPENED  . . . . . . . . .	Number	 0001h	 
+ACTION_REPLACED_OPENED . . . . .	Number	 0003h	 
+FILE_CREATE  . . . . . . . . . .	Number	 0010h	 
+FILE_OPEN  . . . . . . . . . . .	Number	 0001h	 
+FILE_TRUNCATE  . . . . . . . . .	Number	 0002h	 
+LIGHT_BLUE . . . . . . . . . . .	Number	 0009h	 
+LIGHT_CYAN . . . . . . . . . . .	Number	 000Bh	 
+LIGHT_GRAY . . . . . . . . . . .	Number	 0007h	 
+LIGHT_GREEN  . . . . . . . . . .	Number	 000Ah	 
+LIGHT_MAGENTA  . . . . . . . . .	Number	 000Dh	 
+LIGHT_RED  . . . . . . . . . . .	Number	 000Ch	 
+OPEN_ACCESS_READONLY . . . . . .	Number	 0000h	 
+OPEN_ACCESS_READWRITE  . . . . .	Number	 0002h	 
+OPEN_ACCESS_RO_NOMODLASTACCESS .	Number	 0004h	 
+OPEN_ACCESS_WRITEONLY  . . . . .	Number	 0001h	 
+OPEN_FLAGS_ALIAS_HINT  . . . . .	Number	 0400h	 
+OPEN_FLAGS_COMMIT  . . . . . . .	Number	 4000h	 
+OPEN_FLAGS_NOCRITERR . . . . . .	Number	 2000h	 
+OPEN_FLAGS_NOINHERIT . . . . . .	Number	 0080h	 
+OPEN_FLAGS_NO_BUFFERING  . . . .	Number	 0100h	 
+OPEN_FLAGS_NO_COMPRESS . . . . .	Number	 0200h	 
+OPEN_SHARE_COMPATIBLE  . . . . .	Number	 0000h	 
+OPEN_SHARE_DENYNONE  . . . . . .	Number	 0040h	 
+OPEN_SHARE_DENYREADWRITE . . . .	Number	 0010h	 
+OPEN_SHARE_DENYREAD  . . . . . .	Number	 0030h	 
+OPEN_SHARE_DENYWRITE . . . . . .	Number	 0020h	 
+_A_ARCH  . . . . . . . . . . . .	Number	 0020h	 
+_A_HIDDEN  . . . . . . . . . . .	Number	 0002h	 
+_A_NORMAL  . . . . . . . . . . .	Number	 0000h	 
+_A_RDONLY  . . . . . . . . . . .	Number	 0001h	 
+_A_SYSTEM  . . . . . . . . . . .	Number	 0004h	 
+_A_VOLID . . . . . . . . . . . .	Number	 0008h	 
+black  . . . . . . . . . . . . .	Number	 0000h	 
+blue . . . . . . . . . . . . . .	Number	 0001h	 
+brown  . . . . . . . . . . . . .	Number	 0006h	 
+color_index  . . . . . . . . . .	Number	 0001h	 
+cyan . . . . . . . . . . . . . .	Number	 0003h	 
+difficultystring . . . . . . . .	Byte	 0178	  _DATA	
+endstring  . . . . . . . . . . .	Byte	 02B0	  _DATA	
+enemies_left . . . . . . . . . .	DWord	 04B8	  _DATA	
+enemies  . . . . . . . . . . . .	DWord	 03B8	  _DATA	
+enemy_aimed  . . . . . . . . . .	Number	 0004h	 
+enemy_birth_time . . . . . . . .	Word	 09CB	  _DATA	
+enemy_bullets_left . . . . . . .	DWord	 08B8	  _DATA	
+enemy_bullets_up . . . . . . . .	DWord	 07B8	  _DATA	
+enemy_easy . . . . . . . . . . .	Number	 0005h	 
+enemy_flags_left . . . . . . . .	DWord	 06B8	  _DATA	
+enemy_flags  . . . . . . . . . .	DWord	 05B8	  _DATA	
+enemy_index  . . . . . . . . . .	Number	 0003h	 
+enemy_max  . . . . . . . . . . .	Number	 0040h	 
+enemy_num_left_max . . . . . . .	Word	 03B6	  _DATA	
+enemy_num_left . . . . . . . . .	Word	 09C5	  _DATA	
+enemy_num_max  . . . . . . . . .	Word	 03B4	  _DATA	
+enemy_num  . . . . . . . . . . .	Word	 09C3	  _DATA	
+enemy_on_screen  . . . . . . . .	Word	 09C7	  _DATA	
+enemy_speed  . . . . . . . . . .	Word	 09C9	  _DATA	
+enemy_time . . . . . . . . . . .	Word	 09B8	  _DATA	
+enemy_total  . . . . . . . . . .	Word	 09C1	  _DATA	
+enemystring  . . . . . . . . . .	Byte	 09BA	  _DATA	
+exit . . . . . . . . . . . . . .	Text   	 .EXIT
+game_difficulty  . . . . . . . .	Byte	 039C	  _DATA	
+game_mode  . . . . . . . . . . .	Byte	 039B	  _DATA	
+gamestring . . . . . . . . . . .	Byte	 0001	  _DATA	
+gray . . . . . . . . . . . . . .	Number	 0008h	 
+green  . . . . . . . . . . . . .	Number	 0002h	 
+input_port . . . . . . . . . . .	Number	 03C9h	 
+life_num . . . . . . . . . . . .	Word	 03B2	  _DATA	
+lifestring . . . . . . . . . . .	Byte	 03AC	  _DATA	
+lightBlue  . . . . . . . . . . .	Number	 0009h	 
+lightCyan  . . . . . . . . . . .	Number	 000Bh	 
+lightGray  . . . . . . . . . . .	Number	 0007h	 
+lightGreen . . . . . . . . . . .	Number	 000Ah	 
+lightMagenta . . . . . . . . . .	Number	 000Dh	 
+lightRed . . . . . . . . . . . .	Number	 000Ch	 
+magenta  . . . . . . . . . . . .	Number	 0005h	 
+mode_06  . . . . . . . . . . . .	Number	 0006h	 
+mode_0d  . . . . . . . . . . . .	Number	 000Dh	 
+mode_0e  . . . . . . . . . . . .	Number	 000Eh	 
+mode_0f  . . . . . . . . . . . .	Number	 000Fh	 
+mode_10  . . . . . . . . . . . .	Number	 0010h	 
+mode_11  . . . . . . . . . . . .	Number	 0011h	 
+mode_12  . . . . . . . . . . . .	Number	 0012h	 
+mode_13  . . . . . . . . . . . .	Number	 0013h	 
+mode_6a  . . . . . . . . . . . .	Number	 006Ah	 
+mybulletmax  . . . . . . . . . .	Number	 0014h	 
+mybullets  . . . . . . . . . . .	DWord	 09CD	  _DATA	
+normal_word_segment  . . . . . .	Word	 039D	  _DATA	
+output_port  . . . . . . . . . .	Number	 03C8h	 
+red  . . . . . . . . . . . . . .	Number	 0004h	 
+savepage . . . . . . . . . . . .	Byte	 0000	  _DATA	
+scorestring  . . . . . . . . . .	Byte	 03A5	  _DATA	
+score  . . . . . . . . . . . . .	Word	 03A3	  _DATA	
+setcolorback_index . . . . . . .	Number	 0002h	 
+stringend  . . . . . . . . . . .	Byte	 035B	  _DATA	
+video_segment  . . . . . . . . .	Number	 A000h	 
+white  . . . . . . . . . . . . .	Number	 000Fh	 
+xval . . . . . . . . . . . . . .	Word	 039F	  _DATA	
+yellow . . . . . . . . . . . . .	Number	 000Eh	 
+yval . . . . . . . . . . . . . .	Word	 03A1	  _DATA	
+
+	   0 Warnings
+	   0 Errors
